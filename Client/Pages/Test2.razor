@@ -1,0 +1,58 @@
+﻿@page "/Test2"
+
+<p>
+    <TelerikButton OnClick="@RefreshGridData">Refresh Grid Data</TelerikButton>
+</p>
+
+<TelerikGrid @ref="@GridRef"
+             Data="@GridData"
+             AutoGenerateColumns="true" />
+
+@code {
+    TelerikGrid<SampleModel> GridRef { get; set; }
+    List<SampleModel> GridData { get; set; }
+
+    void RefreshGridData()
+    {
+        var newId = GridData.Count + 1;
+
+        //GridData.FirstOrDefault().Text = DateTime.Now.Ticks.ToString();
+
+        GridData.Add(new SampleModel() {
+            Id = newId,
+            Text = "Text " + newId
+        });
+
+        // Call Rebind...
+        GridRef.Rebind();
+
+        // ...OR...
+
+        // ...reset the object reference:
+        //GridData = new List<SampleModel>(GridData);
+
+        // call only if necessary
+        //StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        GridData = new List<SampleModel>();
+
+        for (int i = 1; i <= 3; i++)
+        {
+            GridData.Add(new SampleModel() {
+                Id = i,
+                Text = "Text " + i
+            });
+        }
+
+        base.OnInitialized();
+    }
+
+    public class SampleModel
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+}

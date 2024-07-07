@@ -1,0 +1,47 @@
+﻿@using Microsoft.Extensions.Logging
+@page "/counter"
+
+@inject NavigationManager NavManager
+@inject ILogger<Counter> logger
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Current URL: @url</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount"><i class="oi oi-x"></i>&nbsp;&nbsp;Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private string url;
+
+    protected override void OnInitialized()
+    {
+        url = NavManager.Uri;
+        NavManager.LocationChanged += OnLocationChanged;
+
+        //var numbers =  Enumerable.Range(10, 10).Select(number => number / 10f);
+
+        IEnumerable<decimal> myNumbers = Enumerable.Range(0, 21).Select(number => number / 10m);
+        List<string> myData = myNumbers.Select<decimal,string>(r => r.ToString()).ToList();
+        myData.Insert(0, "Not Scored");
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        url = e.Location;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+        logger.LogWarning("Someone has clicked me!");
+    }
+}

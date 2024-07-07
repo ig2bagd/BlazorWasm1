@@ -1,0 +1,26 @@
+﻿@* https://learn.microsoft.com/en-us/aspnet/core/blazor/components/templated-components *@
+@* @namespace BlazorWasm1.Client.Shared *@
+@typeparam TItem
+
+<nav class="navbar navbar-expand navbar-light bg-light">
+    <div class="container justify-content-start">
+        @StartContent
+        <div class="navbar-nav">
+            @foreach (var item in Items)
+            {
+                @ItemTemplate(item)
+            }
+        </div>
+    </div>
+</nav>
+
+@code {
+    [Parameter]
+    public RenderFragment? StartContent { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment<TItem> ItemTemplate { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<TItem> Items { get; set; } = default!;
+}

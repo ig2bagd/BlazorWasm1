@@ -1,0 +1,39 @@
+﻿@page "/tabs"
+
+<TelerikTooltip TargetSelector=".tooltip-target" Position="@TooltipPosition.Right" Class="blue-yellow" />
+
+<TelerikTabStrip >
+    <TabStripTab>
+        <HeaderTemplate>            
+            My tooltip test&nbsp;
+            <span title="This is freaking cool. I have a very long text here. I know my ABC ..." class="tooltip-target">
+                <TelerikFontIcon Icon="@FontIcon.InfoCircle" />
+            </span>
+            <span title="Can I put this on a new line?" class="tooltip-target">
+                <TelerikFontIcon Icon="@FontIcon.InfoCircle" />
+            </span>
+        </HeaderTemplate>
+        <Content>            
+            This is a tab with a header template including an icon and text.
+        </Content>
+        <ChildContent>
+            ChildContent overrides Content
+            <span alt="This is another example of tooltip!" class="tooltip-target">
+                <TelerikFontIcon Icon="@FontIcon.InfoCircle" />
+            </span>
+        </ChildContent>
+    </TabStripTab>
+    <TabStripTab Title="First">
+        First tab content.
+    </TabStripTab>
+    <TabStripTab Title="Second">
+        Second tab content.
+    </TabStripTab>
+    <TabStripTab Title="Third">
+        Third tab content.
+    </TabStripTab>
+</TelerikTabStrip>
+
+@code {
+
+}

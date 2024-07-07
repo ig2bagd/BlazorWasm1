@@ -1,0 +1,25 @@
+﻿<div class="bg-light m-2 p-2">
+    <h3>MyComponent</h3>
+    <button class="btn btn-primary" @onclick=this.HandleValidSubmit>Update</button>
+    <div class="bg-secondary text-white m-2 p-1">
+        <pre>Counter: @counter </pre>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public Func<int, Task>? OnAccountEntered { get; set; }
+    private int counter;
+
+    private async Task HandleValidSubmit()
+    {
+        if (this.OnAccountEntered is not null)
+        {
+            // unless you're an async expert keep the await clean and simple
+            await this.OnAccountEntered.Invoke(counter + 1);
+            counter++;
+            // put in a delay so you can see this component update afer the parent
+            await Task.Delay(1000);
+        }
+    }
+}

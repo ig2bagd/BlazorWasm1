@@ -1,0 +1,61 @@
+﻿@page "/test1"
+
+@* https://docs.telerik.com/blazor-ui/knowledge-base/dropdown-kb-bind-to-enum *@
+
+@* Enum as string *@
+@CurrValue
+<br />
+@* note that in this case the value is a string, not an enum *@
+@CurrValue?.GetType()
+<br />
+<TelerikDropDownList Data="@DdlData" @bind-Value="@CurrValue"></TelerikDropDownList>
+
+@* for a combo box, make sure that custom values and clearing are not available unless you are explicitly OK with that *@
+<TelerikComboBox Data="@DdlData" @bind-Value="@CurrValue" ClearButton="true" AllowCustom="true" Filterable="false"></TelerikComboBox>
+
+
+<hr/>
+
+
+@* Enum as Value *@
+@selectedValue
+<br />
+@* in this case the value is the enum type *@
+@selectedValue.GetType()
+<br />
+<TelerikDropDownList Data="@myDdlData" TextField="MyTextField" ValueField="MyValueField" @bind-Value="@selectedValue">
+</TelerikDropDownList>
+
+@* for a combo box, make sure that custom values and clearing are not available unless you are explicitly OK with that *@
+<TelerikComboBox Data="@myDdlData" TextField="MyTextField" ValueField="MyValueField" @bind-Value="@selectedValue"
+                 ClearButton="false" AllowCustom="false" Filterable="true">
+</TelerikComboBox>
+
+
+@code{
+    //Enum as string
+    string CurrValue { get; set; }
+    List<string> DdlData { get; set; } = Enum.GetNames(typeof(Telerik.Blazor.AnimationType)).ToList();
+
+
+    //Enum as Value
+    public class EnumDdlModel
+    {
+        public Telerik.Blazor.AnimationType MyValueField { get; set; }
+        public string MyTextField { get; set; }
+    }
+
+    Telerik.Blazor.AnimationType selectedValue { get; set; }
+    List<EnumDdlModel> myDdlData { get; set; } = new List<EnumDdlModel>();
+
+    protected override void OnInitialized()
+    {
+        //prepare instances of the model from the list of enum values and a desired string representation for the user
+        foreach (Telerik.Blazor.AnimationType item in Enum.GetValues(typeof(Telerik.Blazor.AnimationType)))
+        {
+            myDdlData.Add(new EnumDdlModel { MyTextField = item.ToString(), MyValueField = item });
+        }
+
+        base.OnInitialized();
+    }
+}

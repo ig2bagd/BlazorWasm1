@@ -1,0 +1,20 @@
+﻿@page "/parent-child-2"
+
+<PageTitle>Parent Child 2</PageTitle>
+
+<h1>Parent Child 2 Example</h1>
+
+<div>
+    <Child2 OnClickCallback="(value) => { message1 = value; }" />
+    @message1
+</div>
+
+<div>
+    <Child2 OnClickCallback="async (value) => { await Task.Delay(2000); message2 = value; }" />
+    @message2
+</div>
+
+@code {
+    private string message1 = string.Empty;
+    private string message2 = string.Empty;
+}

@@ -1,0 +1,37 @@
+﻿<p>
+    <strong>Title:</strong> @Title
+    <br/>
+    <button @onclick="OnClickCallback">
+        Trigger a Parent component method
+    </button>
+    <br />
+    <strong>RenderFragment:</strong> @ChildContent
+</p>
+
+<p>
+    <label>
+        Count of '+' key presses:
+        <input value="@count" @onkeydown="KeyHandler" @onkeydown:preventDefault />
+    </label>
+</p>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    private int count = 0;
+
+    private void KeyHandler(KeyboardEventArgs e)
+    {
+        if (e.Key == "+")
+        {
+            count++;
+        }
+    }
+}
