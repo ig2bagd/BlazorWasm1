@@ -1,0 +1,50 @@
+﻿@page "/bind"
+
+<PageTitle>Bind</PageTitle>
+
+<h1>Bind Example</h1>
+
+<p>
+    <label>
+        inputValue:
+        <input @bind="inputValue" />
+    </label>
+</p>
+
+<p>
+    <label>
+        InputValue:
+        <input @bind="InputValue" />
+    </label>
+</p>
+
+<p>
+    <label>
+        InputValue2:
+        <input @bind="InputValue2" @bind:event="oninput" />
+    </label>
+
+</p>
+
+<p>
+    <label>
+        Demonstration of equivalent HTML binding:
+        <input value="@InputValue3"
+               @onchange="@((ChangeEventArgs e) => InputValue3 = e?.Value?.ToString())" />
+    </label>
+</p>
+
+<ul>
+    <li><code>inputValue</code>: @inputValue</li>
+    <li><code>InputValue</code>: @InputValue</li>
+    <li><code>InputValue2</code>: @InputValue2</li>
+    <li><code>InputValue3</code>: @InputValue3</li>
+</ul>
+
+@code {
+    private string? inputValue;
+
+    private string? InputValue { get; set; }
+    private string? InputValue2 { get; set; }
+    private string? InputValue3 { get; set; }
+}
