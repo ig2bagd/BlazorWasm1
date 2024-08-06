@@ -39,8 +39,14 @@ else
 }
 
 <button @onclick=@( () => NavManager.NavigateTo("/counter") ) class="btn btn-primary">Go to counter</button>
+<br />
+<br />
+StartDate: @StartDate
 
 @code {
+    [Parameter]
+    public DateTime StartDate { get; set; } = DateTime.Now;
+
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()

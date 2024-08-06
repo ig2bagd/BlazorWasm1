@@ -8,8 +8,10 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<SurveyPrompt Title=@Title />
 
+<button class="btn btn-primary" @onclick="UpdateTitle">Answer</button>
+<br />
 <TelerikButton OnClick="@SayHelloHandler" ThemeColor="primary">Say Hello</TelerikButton>
 <TelerikButton OnClick="@(async () => { await js.InvokeVoidAsync("addState", "multiselect"); navMgr.NavigateTo("./multiselect"); })" ThemeColor="primary">Go to MultiSelect</TelerikButton>
 <TelerikButton OnClick="@(async () => await js.InvokeVoidAsync("saveMessage", "Hello, world!"))" ThemeColor="primary">JS Alert</TelerikButton>
@@ -32,16 +34,32 @@ Welcome to your new app.
     </Body>
 </Dialog>
 
+<hr />
+<p>Slider Value: <b>@SliderValue</b></p>
+
+<input type="range" step="1"
+       @bind-value="SliderValue"
+       @bind-value:event="oninput" />
+
 @code {
-   MarkupString helloString;
-
-   void SayHelloHandler()
-   {
-       string msg = string.Format("Hello from <strong>Telerik Blazor</strong> at {0}.<br /> Now you can use C# to write front-end!", DateTime.Now);
-       helloString = new MarkupString(msg);
-   }
-
+    MarkupString helloString;
+    int SliderValue = 0;
     private int counter;
+
+    public string Title { get; set; } = "How is Blazor working for you?";
+
+    private void UpdateTitle()
+    {
+        Title = $"Pretty good, thanks! ({counter++})";
+    }
+
+    void SayHelloHandler()
+    {
+        string msg = string.Format("Hello from <strong>Telerik Blazor</strong> at {0}.<br /> Now you can use C# to write front-end!", DateTime.Now);
+        helloString = new MarkupString(msg);
+    }
+
+    
 
     private async Task AccountChanged(int value)
     {

@@ -1,4 +1,6 @@
-﻿<div class="alert alert-secondary mt-4">
+﻿@implements IDisposable
+
+<div class="alert alert-secondary mt-4">
     <span class="oi oi-pencil me-2" aria-hidden="true"></span>
     <strong>@Title</strong>
 
@@ -13,4 +15,57 @@
     // Demonstrates how a parent component can supply parameters
     [Parameter]
     public string? Title { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("{0}()", nameof(OnInitialized));
+
+        base.OnInitialized();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine("{0}()", nameof(OnInitializedAsync));
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("{0}()", nameof(OnParametersSet));
+
+        base.OnParametersSet();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Console.WriteLine("{0}()", nameof(OnParametersSetAsync));
+
+        return base.OnParametersSetAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Console.WriteLine("{0}({1}: {2})",
+            nameof(OnAfterRender),
+            nameof(firstRender),
+            firstRender.ToString().ToLower());
+
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine("{0}({1}: {2})",
+            nameof(OnAfterRenderAsync),
+            nameof(firstRender),
+            firstRender.ToString().ToLower());
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void Dispose()
+    {
+        Console.WriteLine("{0}()", nameof(Dispose));
+    }
 }

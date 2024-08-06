@@ -1,0 +1,47 @@
+﻿@page "/dynamic"
+
+<h3>Dynamic Component</h3>
+@* https://www.telerik.com/blogs/how-to-render-blazor-components-dynamically *@
+
+@foreach (var panel in dashboard.Panels)
+{
+    <div class="card my-4">
+        <h1 class="card-header">
+            @panel.Title
+        </h1>
+        <div class="card-body">
+            <div class="card-text">
+                @{
+                    var componentType = ResolveComponent(@panel.Component);
+                    if (componentType != null)
+                    {
+                        <DynamicComponent Type="componentType" Parameters="@panel.Parameters" />
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    DashboardConfig dashboard = new DashboardConfig
+    {
+        Panels = new List<Panel> {
+            new Panel { 
+                Title = "Counter", 
+                Component = nameof(Counter) 
+            },
+            new Panel { 
+                Title = "Weather", 
+                Component = nameof(FetchData), 
+                Parameters = new Dictionary<string, object> { ["StartDate"] = new DateTime(2022,2,1) } 
+            }
+        }
+    };
+
+    private Type? ResolveComponent(string componentName)
+    {
+        return string.IsNullOrEmpty(componentName) ? null
+            : Type.GetType($"BlazorWasm1.Client.Pages.{componentName}");
+    }
+}
