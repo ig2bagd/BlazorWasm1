@@ -1,0 +1,58 @@
+﻿@page "/dynamicform"
+
+<h3>Dynamic Form Example</h3>
+
+<!-- Dropdown for number of form templates -->
+<select @onchange="HandleSelection">
+    @for (int i = 1; i <= 10; i++)
+    {
+        <option value="@i">@i</option>
+    }
+</select>
+
+<!-- Dynamically generate the form templates -->
+@foreach (var i in Enumerable.Range(1, FormCount))
+{   // Since Blazor uses reference types for objects, pass down each FormData object directly to FormTemplate
+    <FormTemplate FormData="@formInputs[i - 1]" />
+}
+
+<button @onclick="SaveData">Save</button>
+
+@code {
+    private int FormCount { get; set; } = 1;
+
+    // Define the model to hold the form inputs
+    private List<FormData> formInputs = new List<FormData>();
+
+    protected override void OnInitialized()
+    {
+        InitializeFormInputs();
+    }
+
+    private void InitializeFormInputs()
+    {
+        formInputs.Clear();
+        for (int i = 0; i < FormCount; i++)
+        {
+            formInputs.Add(new FormData());
+        }
+    }
+
+    private void HandleSelection(ChangeEventArgs e)
+    {
+        // FormCount = int.Parse(e?.Value?.ToString() ?? "0");
+        FormCount = int.Parse(e.Value.ToString());
+        Console.WriteLine($"FormCount: {FormCount}");
+        InitializeFormInputs();
+    }
+
+    private void SaveData()
+    {
+        // Logic to save formInputs to the backend
+        foreach (var form in formInputs)
+        {
+            Console.WriteLine($"Textbox: {form.InputValue}, Date: {form.SelectedDate}, Dropdown: {form.SelectedOption}");
+        }
+    }
+
+}
