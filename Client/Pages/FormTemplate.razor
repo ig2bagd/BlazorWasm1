@@ -1,0 +1,24 @@
+﻿<!-- FormTemplate.razor -->
+<div>
+    <label>Textbox:</label>
+    <input type="text" @bind="FormData.InputValue" placeholder="Enter text" />
+    
+    <label>Date:</label>
+    <input type="date" @bind="FormData.SelectedDate" />
+
+    <label>Dropdown:</label>
+    <select @bind="FormData.SelectedOption">
+        @foreach (var option in FormData.Options)
+        {
+            <option value="@option">@option</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter] public FormData FormData { get; set; } = new();
+    // [Parameter] public string? InputValue { get; set; }
+    // [Parameter] public DateTime SelectedDate { get; set; }
+    // [Parameter] public string? SelectedOption { get; set; }
+    // [Parameter] public List<string> Options { get; set; } = new List<string>();
+}
