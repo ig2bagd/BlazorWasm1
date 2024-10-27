@@ -42,8 +42,28 @@
     {
         // FormCount = int.Parse(e?.Value?.ToString() ?? "0");
         FormCount = int.Parse(e.Value.ToString());
-        Console.WriteLine($"FormCount: {FormCount}");
-        InitializeFormInputs();
+        // Console.WriteLine($"FormCount: {FormCount}");
+        // InitializeFormInputs();
+        // formInputs = Enumerable.Range(0, FormCount).Select(_ => new FormData()).ToList();
+
+        // Add logic to modify the formInputs list while preserving existing data when the count increases and selectively removing items when the count decreases
+        // int newCount = int.Parse(e.Value.ToString());
+
+        if (FormCount > formInputs.Count)
+        {
+            // Add new sections without removing existing data
+            int itemsToAdd = FormCount - formInputs.Count;
+            for (int i = 0; i < itemsToAdd; i++)
+            {
+                formInputs.Add(new FormData());
+            }
+        }
+        else if (FormCount < formInputs.Count)
+        {
+            // Remove only the necessary sections
+            formInputs.RemoveRange(FormCount, formInputs.Count - FormCount);
+        }
+
     }
 
     private void SaveData()
