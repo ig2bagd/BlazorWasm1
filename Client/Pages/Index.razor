@@ -41,10 +41,38 @@ Welcome to your new app.
        @bind-value="SliderValue"
        @bind-value:event="oninput" />
 
+<hr />
+<!-- DynamicComponent -->
+<div>
+    <button class="btn btn-primary mb-3" @onclick="this.OnClick">Switch</button>
+</div>
+
+<DynamicComponent Type="_activeComponent" Parameters="_parameters" />
+
+
 @code {
     MarkupString helloString;
     int SliderValue = 0;
     private int counter;
+
+    private Type _activeComponent = typeof(Counter);
+    private Dictionary<string, object> _parameters = new();
+
+    private Task OnClick()
+    {
+        if (_activeComponent == typeof(Counter))
+        {
+            _activeComponent = typeof(FetchData);
+            _parameters = new();
+        }
+        else
+        {
+            _activeComponent = typeof(Counter);
+            _parameters = new();
+        }
+
+        return Task.CompletedTask;
+    }
 
     public string Title { get; set; } = "How is Blazor working for you?";
 

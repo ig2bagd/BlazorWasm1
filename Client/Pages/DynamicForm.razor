@@ -11,9 +11,17 @@
 </select>
 
 <!-- Dynamically generate the form templates -->
+@*
 @foreach (var i in Enumerable.Range(1, FormCount))
 {   // Since Blazor uses reference types for objects, pass down each FormData object directly to FormTemplate
     <FormTemplate FormData="@formInputs[i - 1]" />
+}
+*@
+
+@* using DynamicComponent *@
+@foreach (var form in formInputs)
+{
+    <DynamicComponent Type="typeof(FormTemplate)" Parameters="@(new Dictionary<string, object> { ["FormData"] = form })" />
 }
 
 <button @onclick="SaveData">Save</button>
@@ -63,7 +71,6 @@
             // Remove only the necessary sections
             formInputs.RemoveRange(FormCount, formInputs.Count - FormCount);
         }
-
     }
 
     private void SaveData()
