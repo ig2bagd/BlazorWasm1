@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
-    <PackageReference Include="Telerik.DataSource" Version="2.1.4" />
+    <PackageReference Include="Telerik.DataSource" Version="3.0.2" />
   </ItemGroup>
 
   <ItemGroup>

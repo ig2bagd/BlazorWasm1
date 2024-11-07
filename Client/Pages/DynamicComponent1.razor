@@ -1,7 +1,7 @@
 ﻿@page "/dynamic-component-1"
 
-@* 
-https://learn.microsoft.com/en-us/aspnet/core/blazor/components/dynamiccomponent 
+@*
+https://learn.microsoft.com/en-us/aspnet/core/blazor/components/dynamiccomponent
 https://github.com/dotnet/blazor-samples/blob/main/8.0/BlazorSample_BlazorWebApp/Components/Pages/DynamicComponent1.razor
 *@
 <PageTitle>Dynamic Component 1</PageTitle>
@@ -30,12 +30,12 @@ https://github.com/dotnet/blazor-samples/blob/main/8.0/BlazorSample_BlazorWebApp
 
 @code {
     private readonly Dictionary<string, Type> components = new()
-        {
-            ["Rocket Lab"] = typeof(RocketLab),
-            ["SpaceX"] = typeof(SpaceX),
-            ["ULA"] = typeof(UnitedLaunchAlliance),
-            ["Virgin Galactic"] = typeof(VirginGalactic)
-        };
+    {
+        ["Rocket Lab"] = typeof(RocketLab),
+        ["SpaceX"] = typeof(SpaceX),
+        ["ULA"] = typeof(UnitedLaunchAlliance),
+        ["Virgin Galactic"] = typeof(VirginGalactic)
+    };
     private Type? selectedType;
 
     private void OnDropdownChange(ChangeEventArgs e)

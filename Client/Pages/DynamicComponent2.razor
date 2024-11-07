@@ -33,29 +33,29 @@
 @code {
     private Dictionary<string, ComponentMetadata> components =
         new()
+        {
+            [nameof(RocketLabWithWindowSeat)] = new ComponentMetadata()
             {
-                [nameof(RocketLabWithWindowSeat)] = new ComponentMetadata()
-                {
-                    Type = typeof(RocketLabWithWindowSeat),
-                    Name = "Rocket Lab with Window Seat",
-                    Parameters = { [nameof(RocketLabWithWindowSeat.WindowSeat)] = false }
-                },
-                [nameof(VirginGalactic)] = new ComponentMetadata()
-                {
-                    Type = typeof(VirginGalactic),
-                    Name = "Virgin Galactic"
-                },
-                [nameof(UnitedLaunchAlliance)] = new ComponentMetadata()
-                {
-                    Type = typeof(UnitedLaunchAlliance),
-                    Name = "ULA"
-                },
-                [nameof(SpaceX)] = new ComponentMetadata()
-                {
-                    Type = typeof(SpaceX),
-                    Name = "SpaceX"
-                }
-            };
+                Type = typeof(RocketLabWithWindowSeat),
+                Name = "Rocket Lab with Window Seat",
+                Parameters = { [nameof(RocketLabWithWindowSeat.WindowSeat)] = false }
+            },
+            [nameof(VirginGalactic)] = new ComponentMetadata()
+            {
+                Type = typeof(VirginGalactic),
+                Name = "Virgin Galactic"
+            },
+            [nameof(UnitedLaunchAlliance)] = new ComponentMetadata()
+            {
+                Type = typeof(UnitedLaunchAlliance),
+                Name = "ULA"
+            },
+            [nameof(SpaceX)] = new ComponentMetadata()
+            {
+                Type = typeof(SpaceX),
+                Name = "SpaceX"
+            }
+        };
     private ComponentMetadata? selectedComponent;
     private bool windowSeat;
 

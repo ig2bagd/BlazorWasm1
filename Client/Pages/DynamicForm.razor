@@ -40,7 +40,12 @@
     private void InitializeFormInputs()
     {
         formInputs.Clear();
-        for (int i = 0; i < FormCount; i++)
+        // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/?view=aspnetcore-8.0&source=recommendations#loop-variables-with-component-parameters-and-child-content
+        // for (int i = 0; i < FormCount; i++)
+        // {
+        //     formInputs.Add(new FormData());
+        // }
+        foreach (var i in Enumerable.Range(1, FormCount))
         {
             formInputs.Add(new FormData());
         }

@@ -28,14 +28,23 @@
     {
         Panels = new List<Panel> {
             new Panel { 
-                Title = "Counter", 
+                Title = "Counter1", 
                 Component = nameof(Counter) 
             },
-            new Panel { 
-                Title = "Weather", 
-                Component = nameof(FetchData), 
-                Parameters = new Dictionary<string, object> { ["StartDate"] = new DateTime(2022,2,1) } 
+            new Panel {
+                Title = "Counter2",
+                Component = nameof(Counter)
+            },
+            new Panel {
+                Title = "Counter3",
+                Component = nameof(Counter)
             }
+
+            // new Panel { 
+            //     Title = "Weather", 
+            //     Component = nameof(FetchData), 
+            //     Parameters = new Dictionary<string, object> { ["StartDate"] = new DateTime(2022,2,1) } 
+            // }
         }
     };
 
