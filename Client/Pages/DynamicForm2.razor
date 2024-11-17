@@ -1,0 +1,41 @@
+﻿@page "/dynamicform2"
+
+<button @onclick="CreateComponent">Create Component</button>
+
+@foreach (var component in components)
+{
+    <DynamicComponent Type="@typeof(FormTmplate)" Parameters="@component.Parameters" />
+}
+
+@code {
+    private List<ComponentModel> components = new List<ComponentModel>();
+
+    int idx = 1;
+    private void CreateComponent()
+    {
+        var componentModel = new ComponentModel();
+        componentModel = new ComponentModel
+        {
+            Parameters = new Dictionary<string, object>
+            {
+                { "Title", $"Dynamic Title #{idx}" },
+                { "Description", "This is a dynamic description" },
+                { "OnClose", EventCallback.Factory.Create(this, () => RemoveComponent(componentModel)) }
+            }
+        };
+
+        components.Add(componentModel);
+        idx++;
+    }
+
+    private void RemoveComponent(ComponentModel component)
+    {
+        components.Remove(component);
+        StateHasChanged();
+    }
+
+    private class ComponentModel
+    {
+        public Dictionary<string, object> Parameters { get; set; }
+    }
+}

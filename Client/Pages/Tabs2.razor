@@ -1,0 +1,40 @@
+﻿@page "/tabs2"
+
+@result
+
+<TelerikTabStrip ActiveTabIndexChanged="@TabChangedHandler">
+    @{
+        foreach (MyTabModel item in tabs)
+        {
+            <TabStripTab Title="@item.Title" Disabled="@item.Disabled" @key="@item">
+                Content for tab @item.Title
+            </TabStripTab>
+        }
+    }
+</TelerikTabStrip>
+
+<TelerikButton OnClick="@( () => tabs[1].Disabled = !tabs[1].Disabled )">Toggle the Disabled state of the second tab</TelerikButton>
+
+@code {
+    MarkupString result { get; set; }
+    void TabChangedHandler(int newIndex)
+    {
+        string tempResult = $"current tab {newIndex} selected on {DateTime.Now}";
+        MyTabModel currTab = tabs[newIndex];
+        tempResult += $"<br />the new tab has a title {currTab.Title}";
+        result = new MarkupString(tempResult);
+    }
+
+    List<MyTabModel> tabs = new List<MyTabModel>()
+    {
+        new MyTabModel { Title = "One" },
+        new MyTabModel { Title = "Two", Disabled = true },
+        new MyTabModel { Title = "Three" }
+    };
+
+    public class MyTabModel
+    {
+        public string Title { get; set; }
+        public bool Disabled { get; set; }
+    }
+}

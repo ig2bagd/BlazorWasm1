@@ -1,0 +1,21 @@
+﻿<div>
+    <p>I'm a dynamic component!</p>
+    <p>Title: @Title</p> 
+    <p>Description: @Description</p>
+    <button @onclick="Close">Close</button>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Description { get; set; }
+
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private void Close()
+    {
+        if (OnClose.HasDelegate) 
+        { 
+            OnClose.InvokeAsync(null); 
+        }
+    }
+}
