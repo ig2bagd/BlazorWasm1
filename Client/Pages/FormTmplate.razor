@@ -3,6 +3,9 @@
     <p>Title: @Title</p> 
     <p>Description: @Description</p>
     <button @onclick="Close">Close</button>
+    <button @onclick="MyMethod">Call Parent Method</button>
+    <button @onclick="CallFunction">Call Parent Function</button>
+    <button @onclick="TriggerEvent">Trigger Parent Event</button>
 </div>
 
 @code {
@@ -11,11 +14,38 @@
 
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private void Close()
+    [Parameter] public Action? MyMethod { get; set; }
+    [Parameter] public Func<int, int, string, string>? MyFunction { get; set; }
+    [Parameter] public EventCallback OnButtonClick { get; set; }
+
+    private async Task Close()
     {
         if (OnClose.HasDelegate) 
         { 
-            OnClose.InvokeAsync(null); 
+            await OnClose.InvokeAsync(null); 
         }
+
+    }
+
+    private void CallFunction()
+    {
+        if (MyFunction != null)
+        {
+            string result = MyFunction.Invoke(5, 10, "Hello");
+            Console.WriteLine($"Function Result: {result}");
+        }
+    }
+
+    private async Task TriggerEvent()
+    {
+        if (OnButtonClick.HasDelegate)
+        {
+            // Blazor automatically invokes the EventCallback for DOM event bindings such as @onclick.
+            // Explicit invocation is necessary in cases where:
+            // 1. The EventCallback is not directly tied to a DOM event.
+            // 2. You are handling composite logic or invoking the callback as part of a larger method.
+            await OnButtonClick.InvokeAsync(null);  // Invokes the parent's event handler
+        }
+
     }
 }

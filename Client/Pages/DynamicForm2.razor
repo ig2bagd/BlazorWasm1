@@ -20,7 +20,10 @@
             {
                 { "Title", $"Dynamic Title #{idx}" },
                 { "Description", "This is a dynamic description" },
-                { "OnClose", EventCallback.Factory.Create(this, () => RemoveComponent(componentModel)) }
+                { "OnClose", EventCallback.Factory.Create(this, () => RemoveComponent(componentModel)) },
+                { "MyMethod", (Action)SomeMethod },
+                { "MyFunction", (Func<int, int, string, string>)SomeMethod2 },
+                { "OnButtonClick", EventCallback.Factory.Create(this, HandleButtonClick) }
             }
         };
 
@@ -28,10 +31,26 @@
         idx++;
     }
 
+
     private void RemoveComponent(ComponentModel component)
     {
         components.Remove(component);
-        StateHasChanged();
+        // StateHasChanged();
+    }
+
+    private void SomeMethod()
+    {
+        Console.WriteLine("Method executed from the parent component!");
+    }
+
+    private string SomeMethod2(int a, int b, string c)
+    {
+        return $"Sum: {a + b}, String: {c}";
+    }
+
+    private void HandleButtonClick()
+    {
+        Console.WriteLine("Event triggered from the child component!");
     }
 
     private class ComponentModel
