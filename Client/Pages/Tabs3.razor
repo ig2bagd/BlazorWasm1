@@ -1,0 +1,72 @@
+﻿@page "/tabs3"
+
+<TelerikTabStrip>
+    <TabStripTab Title="Add Tabs">
+        <Content>
+            <div>
+                <label for="numberOfTabs">Select number of tabs to create:</label>
+                <select id="numberOfTabs" @onchange="HandleChange">
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+        </Content>
+    </TabStripTab>
+
+    @foreach (var tab in Tabs.Skip(1))      // Skip the first tab
+    {
+        <TabStripTab Title="@tab.Title">
+            <Content>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Content for @tab.Title</span>
+                    <button type="button" class="close-button" aria-label="Close" @onclick="() => CloseTab(tab)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </Content>
+        </TabStripTab>
+    }
+</TelerikTabStrip>
+
+@code {
+    private List<TabModel> Tabs = new List<TabModel>
+    {
+        new TabModel { Title = "Add Tabs" } // The first tab for adding tabs
+    };
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int numberOfTabs))
+        {
+            Tabs = new List<TabModel> { new TabModel { Title = "Add Tabs" } }; // Reset the list and keep the first tab
+            for (int i = 1; i <= numberOfTabs; i++)
+            {
+                Tabs.Add(new TabModel { Title = $"Tab {i}" });
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void CloseTab(TabModel tab)
+    {
+        Tabs.Remove(tab);
+        StateHasChanged();
+    }
+
+    public class TabModel
+    {
+        public string Title { get; set; }
+    }
+
+}
+
+
+<style>
+    .close-button {
+        color: red;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+</style>
