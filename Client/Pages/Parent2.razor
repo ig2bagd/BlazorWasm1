@@ -1,6 +1,9 @@
 ﻿@* https://learn.microsoft.com/en-us/aspnet/core/blazor/components/data-binding?view=aspnetcore-6.0#bind-across-more-than-two-components *@
 @page "/parent-2"
 
+@implements IDisposable
+@inject StateContainer State
+
 <PageTitle>Parent 2</PageTitle>
 
 <h1>Parent Example 2</h1>
@@ -19,5 +22,24 @@
     private void ChangeValue()
     {
         parentMessage = $"Set in Parent {DateTime.Now}";
+    }
+
+
+    // Blazor Tutorial: Propagating an Event Callback from a Nested Component to Its Ancestor
+    // https://www.youtube.com/watch?v=66NBdpu1Nig
+
+    protected override void OnInitialized()
+    {
+        State.OnChildClick += DisplayMessage;
+    }
+
+    private void DisplayMessage(string text)
+    {
+        Console.WriteLine(text);
+    }
+
+    public void Dispose()
+    {
+        State.OnChildClick -= DisplayMessage;
     }
 }

@@ -6,7 +6,9 @@
 <p>Nested component Property: <b>@StateContainer.Property</b></p>
 
 <p>
-    <button @onclick="ChangePropertyValue">
+    <button @onclick="ChangePropertyValue"
+            @onclick:preventDefault
+            @onclick:stopPropagation>
         Change the Property from the Nested component
     </button>
 </p>

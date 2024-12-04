@@ -1,10 +1,14 @@
-﻿<div class="border rounded m-1 p-1">
+﻿@inject StateContainer State
+
+<div class="border rounded m-1 p-1">
     <h3>Grandchild Component</h3>
 
     <p>Grandchild Message: <b>@GrandchildMessage</b></p>
 
     <p>
-        <button @onclick="ChangeValue">Change from Grandchild</button>
+        <button @onclick="ChangeValue"
+                @onclick:preventDefault
+                @onclick:stopPropagation>Change from Grandchild</button>
     </p>
 </div>
 
@@ -17,7 +21,8 @@
 
     private async Task ChangeValue()
     {
-        await GrandchildMessageChanged.InvokeAsync(
-            $"Set in Grandchild {DateTime.Now}");
+        await GrandchildMessageChanged.InvokeAsync($"Set in Grandchild {DateTime.Now}");
+
+        State.ChildClicked("Grandchild says hi");
     }
 }

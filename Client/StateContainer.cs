@@ -17,5 +17,15 @@
         public event Action? OnChange;
 
         private void NotifyStateChanged() => OnChange?.Invoke();
+
+
+        // Blazor Tutorial: Propagating an Event Callback from a Nested Component to Its Ancestor
+        // https://www.youtube.com/watch?v=66NBdpu1Nig
+        public event Action<string>? OnChildClick;
+
+        public void ChildClicked(string text)
+        {
+            OnChildClick?.Invoke(text);
+        }
     }
 }
