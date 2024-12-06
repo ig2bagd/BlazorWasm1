@@ -1,0 +1,17 @@
+﻿<h3>Child Component</h3>
+
+<input @bind="CurrentValue" @oninput="OnCurrentValueChanged" />
+
+@code {
+    [Parameter]
+    public string CurrentValue { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> CurrentValueChanged { get; set; }
+
+    private async Task OnCurrentValueChanged(ChangeEventArgs e)
+    {
+        CurrentValue = e.Value?.ToString() ?? string.Empty;
+        await CurrentValueChanged.InvokeAsync(CurrentValue);
+    }
+}

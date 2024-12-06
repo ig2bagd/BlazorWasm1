@@ -9,6 +9,13 @@
 
 <ChildParameterExpression @bind-Year="year" />
 
+<Child4 YearExpression="x => GetYear() + x" YearsToAdd="5" />
+
 @code {
     private int year = 1979;
+
+    private int GetYear()
+    {
+        return DateTime.Now.Year;
+    }
 }

@@ -1,0 +1,11 @@
+﻿@page "/bindparent1"
+
+<h3>Parent Component</h3>
+
+<BindChild1 @bind-CurrentValue="InputValue" />
+
+<p>The value in the parent component is: @InputValue</p>
+
+@code {
+    private string InputValue { get; set; } = "Hello, Blazor!";
+}

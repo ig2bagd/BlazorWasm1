@@ -1,0 +1,15 @@
+﻿@using System.Linq.Expressions
+
+<h3>Child Component</h3>
+
+<p>The result is: @Result</p>
+
+@code {
+    [Parameter]
+    public Expression<Func<int, int>> YearExpression { get; set; } = default!;
+
+    [Parameter]
+    public int YearsToAdd { get; set; }
+
+    private int Result => YearExpression.Compile().Invoke(YearsToAdd);
+}
