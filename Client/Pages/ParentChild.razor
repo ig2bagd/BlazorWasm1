@@ -4,7 +4,7 @@
 
 <h1>Parent Child Example</h1>
 
-<Child Title="Panel Title from Parent" OnClickCallback="ShowMessage">
+<Child Title="Panel Title from Parent" OnClickCallback="ShowMessage" GetMessage="GetMessageFromParent">
     Content of the child component is supplied by the parent component.
 </Child>
 
@@ -16,5 +16,11 @@
     private void ShowMessage(MouseEventArgs e)
     {
         message = $"Blaze a new trail with Blazor! ({e.ScreenX}:{e.ScreenY})";
+    }
+
+    private string GetMessageFromParent(string input)
+    {
+        // Process the input and return a value
+        return $"Parent received: {input}";
     }
 }

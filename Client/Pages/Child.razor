@@ -1,4 +1,10 @@
 ﻿<p>
+    <p>Message from parent: @messageFromParent</p>
+
+    <button @onclick="GetMessageFromParent">Send Parameter to Parent</button>
+</p>
+<hr />
+<p>
     <strong>Title:</strong> @Title
     <br/>
     <button @onclick="OnClickCallback">
@@ -16,6 +22,22 @@
 </p>
 
 @code {
+    #region Send Parameter to & Receive Value from Parent
+    [Parameter]
+    public Func<string, string> GetMessage { get; set; }
+
+    private string messageFromParent;
+
+    private void GetMessageFromParent()
+    {
+        // Define the parameter to send to the parent
+        string parameter = "Hello from Child!";
+
+        // Call the parent's function, pass the parameter, and store the returned value
+        messageFromParent = GetMessage?.Invoke(parameter);
+    }
+    #endregion
+
     [Parameter]
     public string? Title { get; set; }
 
