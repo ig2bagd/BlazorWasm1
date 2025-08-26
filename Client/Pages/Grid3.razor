@@ -1,0 +1,87 @@
+﻿@page "/grid3"
+
+<TelerikGrid Data="@GridData"
+             OnUpdate="@UpdateHandler"
+             OnDelete="@DeleteHandler"
+             OnCreate="@CreateHandler"
+             EditMode="@GridEditMode.Incell"
+             Pageable="true"
+             Sortable="true">
+    <GridColumns>
+        <GridColumn Field="@(nameof(MyDataItem.Name))" Title="Name" />
+        <GridColumn Field="@(nameof(MyDataItem.Value))" Title="Value" />
+        <GridCommandColumn>
+            <GridCommandButton Command="Save" Icon="@SvgIcon.Save">Save</GridCommandButton>
+            <GridCommandButton Command="Cancel" Icon="@SvgIcon.Cancel">Cancel</GridCommandButton>
+            <GridCommandButton Command="Delete" Icon="@SvgIcon.Trash">Delete</GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+    <GridToolBarTemplate>
+        <GridCommandButton Command="Add" Icon="@SvgIcon.Plus">Add New Item</GridCommandButton>
+    </GridToolBarTemplate>
+</TelerikGrid>
+
+@code {
+    private List<MyDataItem> GridData { get; set; } = new List<MyDataItem>();
+
+    protected override void OnInitialized()
+    {
+        string rawData = "My Text1::100|My Text2::250|My Text3::550|My Text4::875";
+        GridData = GetDataFromString(rawData);
+    }
+
+    private List<MyDataItem> GetDataFromString(string data)
+    {
+        var list = new List<MyDataItem>();
+        var parts = data.Split('|');
+        int id = 1;
+        foreach (var part in parts)
+        {
+            var subParts = part.Split("::");
+            if (subParts.Length == 2)
+            {
+                list.Add(new MyDataItem
+                {
+                    Id = id++,
+                    Name = subParts[0],
+                    Value = int.Parse(subParts[1])
+                });
+            }
+        }
+        return list;
+    }
+
+    // CRUD Event Handlers
+    private async Task UpdateHandler(GridCommandEventArgs args)
+    {
+        var updatedItem = (MyDataItem)args.Item;
+        var originalItem = GridData.FirstOrDefault(i => i.Id == updatedItem.Id);
+        if (originalItem != null)
+        {
+            originalItem.Name = updatedItem.Name;
+            originalItem.Value = updatedItem.Value;
+        }
+    }
+
+    private async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        var itemToDelete = (MyDataItem)args.Item;
+        GridData.Remove(itemToDelete);
+    }
+
+    private async Task CreateHandler(GridCommandEventArgs args)
+    {
+        var newItem = (MyDataItem)args.Item;
+        // Find the maximum ID and increment it for the new item
+        int nextId = GridData.Any() ? GridData.Max(x => x.Id) + 1 : 1;
+        newItem.Id = nextId;
+        GridData.Add(newItem);
+    }
+
+    public class MyDataItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Value { get; set; }
+    }
+}
