@@ -1,28 +1,42 @@
 ﻿@page "/grid3"
+@using System.ComponentModel.DataAnnotations
 
-<TelerikGrid Data="@GridData"
+<TelerikGrid Data="@GridData" 
+             Class="grid-no-scroll"
+             Pageable="true"
+             Sortable="true"
+             OnCreate="@CreateHandler"
              OnUpdate="@UpdateHandler"
              OnDelete="@DeleteHandler"
-             OnCreate="@CreateHandler"
-             EditMode="@GridEditMode.Incell"
-             Pageable="true"
-             Sortable="true">
+             EditMode="@GridEditMode.Incell">
+    <GridToolBarTemplate>
+        <GridCommandButton Command="Add" Icon="@SvgIcon.Plus">Add Item</GridCommandButton>
+    </GridToolBarTemplate>
     <GridColumns>
-        <GridColumn Field="@(nameof(MyDataItem.Name))" Title="Name" />
-        <GridColumn Field="@(nameof(MyDataItem.Value))" Title="Value" />
-        <GridCommandColumn>
-            <GridCommandButton Command="Save" Icon="@SvgIcon.Save">Save</GridCommandButton>
-            <GridCommandButton Command="Cancel" Icon="@SvgIcon.Cancel">Cancel</GridCommandButton>
+        <GridCommandColumn Width="95px">
             <GridCommandButton Command="Delete" Icon="@SvgIcon.Trash">Delete</GridCommandButton>
         </GridCommandColumn>
+
+        <GridColumn Field="@(nameof(MyDataItem.Id))" Title="Id" Editable="false" />
+        <GridColumn Field="@(nameof(MyDataItem.Name))" Title="Name">
+            <EditorTemplate Context="context">
+                <TelerikTextBox @bind-Value="((MyDataItem)context).Name" />
+                <ValidationMessage For="@(() => ((MyDataItem)context).Name)" />
+            </EditorTemplate>
+        </GridColumn>
+        <GridColumn Field="@(nameof(MyDataItem.Value))" Title="Value" DisplayFormat="{0:C2}">
+            <EditorTemplate Context="context">
+                <TelerikNumericTextBox @bind-Value="((MyDataItem)context).Value" Decimals="2" Arrows="false"></TelerikNumericTextBox>
+            </EditorTemplate>
+        </GridColumn>
     </GridColumns>
-    <GridToolBarTemplate>
-        <GridCommandButton Command="Add" Icon="@SvgIcon.Plus">Add New Item</GridCommandButton>
-    </GridToolBarTemplate>
 </TelerikGrid>
 
 @code {
-    private List<MyDataItem> GridData { get; set; } = new List<MyDataItem>();
+    [CascadingParameter]
+    public DialogFactory? TelerikDialogs { get; set; }
+
+    private List<MyDataItem> GridData { get; set; } = new();
 
     protected override void OnInitialized()
     {
@@ -61,27 +75,93 @@
             originalItem.Name = updatedItem.Name;
             originalItem.Value = updatedItem.Value;
         }
+
+        await Task.CompletedTask;
     }
 
     private async Task DeleteHandler(GridCommandEventArgs args)
     {
         var itemToDelete = (MyDataItem)args.Item;
+
+        bool cancelled = await ShouldCancel("Deleting", itemToDelete.Name);
+        if (cancelled)
+        {
+            args.IsCancelled = true;
+            return;
+        }
+
         GridData.Remove(itemToDelete);
     }
 
     private async Task CreateHandler(GridCommandEventArgs args)
     {
+        // Get the new item from the grid's arguments
         var newItem = (MyDataItem)args.Item;
+
+        /*
+        // Check if the validation context is valid for the new item
+        var context = new System.ComponentModel.DataAnnotations.ValidationContext(newItem);
+        var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+
+        // This method will perform the DataAnnotations validation
+        bool isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(newItem, context, validationResults, true);
+
+        if (!isValid)
+        {
+            // If the object is invalid, you can manually display validation messages or simply cancel the action.
+            // For a basic example, you can cancel the action to prevent the invalid item from being added.
+            args.IsCancelled = true;
+            return;
+        }
+        */
+
         // Find the maximum ID and increment it for the new item
         int nextId = GridData.Any() ? GridData.Max(x => x.Id) + 1 : 1;
         newItem.Id = nextId;
         GridData.Add(newItem);
+
+        await Task.CompletedTask;
+    }
+
+    private async Task<bool> ShouldCancel(string operation, string name)
+    {
+        string dialogMessage = $"{operation} product {name}. Continue?";
+
+        bool dialogResult = true;
+
+        if (TelerikDialogs != null)
+        {
+            dialogResult = await TelerikDialogs.ConfirmAsync(dialogMessage, "Confirm Data Change");
+        }
+
+        return !dialogResult;
     }
 
     public class MyDataItem
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
         public int Value { get; set; }
     }
 }
+
+
+<style>
+    /* Remove the Vertical Grid Scrollbar
+       https://www.telerik.com/blazor-ui/documentation/knowledge-base/grid-hide-vertical-scrollbar 
+    */
+    .grid-no-scroll .k-grid-content {
+        overflow-y: auto;
+    }
+
+    .grid-no-scroll .k-grid-header,
+    .grid-no-scroll .k-grid-footer {
+        padding-right: 0; /* version 2.26 and older requires !important here */
+    }
+
+    .grid-no-scroll .k-grid-header-wrap,
+    .grid-no-scroll .k-grid-footer-wrap {
+        border-right-width: 0;
+    }
+</style>
