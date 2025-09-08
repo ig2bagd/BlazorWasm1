@@ -5,6 +5,7 @@
              Class="grid-no-scroll"
              Pageable="true"
              Sortable="true"
+             ConfirmDelete="true"
              OnCreate="@CreateHandler"
              OnUpdate="@UpdateHandler"
              OnDelete="@DeleteHandler"
@@ -12,6 +13,9 @@
     <GridToolBarTemplate>
         <GridCommandButton Command="Add" Icon="@SvgIcon.Plus">Add Item</GridCommandButton>
     </GridToolBarTemplate>
+    <GridSettings>
+        <GridValidationSettings Enabled="@EnabledValidation" />
+    </GridSettings>
     <GridColumns>
         <GridCommandColumn Width="95px">
             <GridCommandButton Command="Delete" Icon="@SvgIcon.Trash">Delete</GridCommandButton>
@@ -19,9 +23,20 @@
 
         <GridColumn Field="@(nameof(MyDataItem.Id))" Title="Id" Editable="false" />
         <GridColumn Field="@(nameof(MyDataItem.Name))" Title="Name">
-            <EditorTemplate Context="context">
-                <TelerikTextBox @bind-Value="((MyDataItem)context).Name" />
-                <ValidationMessage For="@(() => ((MyDataItem)context).Name)" />
+            <EditorTemplate>
+                @{
+                    var item = context as MyDataItem;
+                    <TelerikTextBox @bind-Value="item.Name" />
+                    <ValidationMessage For="@(() => item.Name)" />
+                }
+            </EditorTemplate>
+        </GridColumn>
+        <GridColumn Field="@(nameof(MyDataItem.Value))" Title="Value" DisplayFormat="{0:C2}">
+            <EditorTemplate>
+                @{
+                    var item = context as MyDataItem;
+                    <TelerikNumericTextBox @bind-Value="item.Value" Decimals="2" Arrows="false"></TelerikNumericTextBox>
+                }
             </EditorTemplate>
         </GridColumn>
         <GridColumn Field="@(nameof(MyDataItem.Value))" Title="Value" DisplayFormat="{0:C2}">
@@ -37,6 +52,7 @@
     public DialogFactory? TelerikDialogs { get; set; }
 
     private List<MyDataItem> GridData { get; set; } = new();
+    public bool EnabledValidation { get; set; } = true;
 
     protected override void OnInitialized()
     {
@@ -83,6 +99,13 @@
     {
         var itemToDelete = (MyDataItem)args.Item;
 
+        // bool cancelled = await ShouldCancel("Deleting", itemToDelete.Name);
+        // if (cancelled)
+        // {
+        //     args.IsCancelled = true;
+        //     return;
+        // }
+
         bool cancelled = await ShouldCancel("Deleting", itemToDelete.Name);
         if (cancelled)
         {
@@ -91,6 +114,8 @@
         }
 
         GridData.Remove(itemToDelete);
+
+        await Task.CompletedTask;
     }
 
     private async Task CreateHandler(GridCommandEventArgs args)
@@ -141,6 +166,7 @@
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
+        [StringLength(40)]
         public string Name { get; set; }
         public int Value { get; set; }
     }
