@@ -1,0 +1,128 @@
+﻿@page "/grid4"
+
+@using Telerik.Blazor.Components
+@using System.ComponentModel.DataAnnotations
+
+<TelerikGrid @ref="gridRef"
+             Data=@people
+             ScrollMode="GridScrollMode.Virtual"
+             Height="500px"
+             RowHeight="50"
+             PageSize="10"
+             Pageable="false"
+             Sortable="true"
+             OnCreate="@CreateHandler"
+             OnUpdate="@UpdateHandler"
+             OnDelete="@DeleteHandler"
+             ConfirmDelete="false"
+             EditMode="@GridEditMode.Inline">
+    <GridColumns>
+        <GridColumn Field="Id" Title="ID" Width="120" />
+        <GridColumn Field="@(nameof(Person.Name))" Title="Name" Width="200">
+            <EditorTemplate>
+                @{
+                    var person = context as Person;
+                }
+                <TelerikTextBox @bind-Value="person.Name" Placeholder="Enter Name" />
+                <ValidationMessage For="@(() => person.Name)" />
+            </EditorTemplate>
+        </GridColumn>
+        <GridColumn Field="@(nameof(Person.Age))" Title="Age" Width="120">
+        <EditorTemplate>
+                @{
+                    var person = context as Person;
+                }
+                <TelerikNumericTextBox @bind-Value="person.Age" Placeholder="Enter Age" />
+                <ValidationMessage For="@(() => person.Age)" />
+            </EditorTemplate>
+        </GridColumn>
+
+        <GridCommandColumn>
+            <GridCommandButton Command="Edit" Icon="@SvgIcon.Pencil"/>
+            <GridCommandButton Command="Delete" Icon="@SvgIcon.Trash"/>
+            <GridCommandButton Command="Save" Icon="@SvgIcon.Check" ShowInEdit="true" />
+            <GridCommandButton Command="Cancel" Icon="@SvgIcon.Cancel" ShowInEdit="true" />
+        </GridCommandColumn>
+    </GridColumns>
+
+    <GridToolBarTemplate>
+        <GridCommandButton Command="Add" Icon="@SvgIcon.Plus">Add Item</GridCommandButton>
+    </GridToolBarTemplate>
+</TelerikGrid>
+
+@code {
+    private TelerikGrid<Person> gridRef;
+    private List<Person> people;
+
+    protected override void OnInitialized()
+    {
+        // Sample data initialization
+        /*
+        people = new List<Person>
+        {
+            new Person { Id = 1, Name = "John Doe", Age = 30 },
+            new Person { Id = 2, Name = "Jane Smith", Age = 25 },
+            // Add more sample records
+        };
+        */
+
+        // Initialize 100 sample Person records
+        people = Enumerable.Range(1, 20)
+            .Select(i => new Person
+            {
+                Id = i,
+                Name = $"Person {i}",
+                Age = 20 + (i % 41) // Ages from 20 to 60
+            })
+            .ToList();
+    }
+
+    private async Task CreateHandler(GridCommandEventArgs args)
+    {
+        var newPerson = args.Item as Person;
+
+        newPerson.Id = people.Count + 1;
+        people.Insert(0, newPerson);
+        // StateHasChanged();
+        await gridRef.SetStateAsync(new GridState<Person>());
+    }
+
+    private async Task UpdateHandler(GridCommandEventArgs args)
+    {
+        var updPerson = args.Item as Person;
+        var orgPerson = people.FirstOrDefault(i => i.Id == updPerson.Id);
+        if (orgPerson != null)
+        {
+            orgPerson.Name = updPerson.Name;
+            orgPerson.Age = updPerson.Age;
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        var itemToDelete = args.Item as Person;
+
+        people.Remove(itemToDelete);
+
+        // Create a new list reference to trigger a refresh in the grid.
+        people = people.ToList();
+
+        await Task.CompletedTask;
+    }
+
+
+
+    public class Person
+    {
+        public int Id { get; set; }
+        [Required(ErrorMessage = "Name is required")]
+        [EditorRequired]
+
+        public string Name { get; set; }
+        [Required(ErrorMessage = "Age is required")]
+        [EditorRequired]
+        public int? Age { get; set; }
+    }
+}
