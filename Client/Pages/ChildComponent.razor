@@ -1,0 +1,20 @@
+﻿<!-- ChildComponent.razor -->
+<button @onclick="AddPerson">Add Person</button>
+
+@code {
+    [Parameter] public List<Person> People { get; set; } = new();
+    [Parameter] public EventCallback<List<Person>> PeopleChanged { get; set; }
+    // [Parameter] public EventCallback<Person> OnPersonAdded { get; set; }
+
+    private Task AddPerson()
+    {
+        var updated = new List<Person>(People)
+        {
+            new Person { Name = "Alice", Age = 30 }
+        };
+        return PeopleChanged.InvokeAsync(updated);
+
+        // var newPerson = new Person { Name = "Alice", Age = 30 };
+        // OnPersonAdded.InvokeAsync(newPerson);
+    }
+}

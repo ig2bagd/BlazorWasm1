@@ -1,0 +1,29 @@
+﻿<!-- ParentComponent.razor -->
+@* <ChildComponent OnPersonAdded="HandlePersonAdded" /> *@
+
+<ChildComponent People="People" PeopleChanged="OnPeopleChanged" />
+
+
+<ul>
+    @foreach (var person in People)
+    {
+        <li>@person.Name (@person.Age)</li>
+    }
+</ul>
+
+@code {
+    [Parameter] public List<Person> People { get; set; }
+    [Parameter] public EventCallback<List<Person>> PeopleChanged { get; set; }
+    /*
+    [Parameter] public EventCallback<List<Person>> OnPeopleChanged { get; set; }
+
+    void HandlePersonAdded(Person newPerson)
+    {
+        People = new List<Person>(People) { newPerson };
+        OnPeopleChanged.InvokeAsync(People);
+    }
+    */
+
+    private Task OnPeopleChanged(List<Person> updated)
+     => PeopleChanged.InvokeAsync(updated);
+}

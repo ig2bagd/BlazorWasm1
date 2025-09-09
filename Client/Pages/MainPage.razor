@@ -1,0 +1,19 @@
+﻿@page "/main-page"
+
+<!-- MainPage.razor -->
+<ParentComponent People="people" PeopleChanged="UpdatePeople" />
+
+@code {
+    // private List<Person> people = new();
+    private List<Person> people = new()
+    {
+        new Person { Name = "Bob", Age = 40 },
+        new Person { Name = "Carol", Age = 35 }
+    };
+
+    void UpdatePeople(List<Person> updatedList)
+    {
+        people = updatedList;
+        StateHasChanged();                          // Optional, but ensures re-render
+    }
+}
