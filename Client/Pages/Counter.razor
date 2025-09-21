@@ -1,5 +1,7 @@
-﻿@using Microsoft.Extensions.Logging
-@page "/counter"
+﻿@page "/counter"
+
+@using Microsoft.Extensions.Logging
+@using System.Text.Json;
 
 @inject NavigationManager NavManager
 @inject ILogger<Counter> logger
@@ -24,8 +26,75 @@
         //var numbers =  Enumerable.Range(10, 10).Select(number => number / 10f);
 
         IEnumerable<decimal> myNumbers = Enumerable.Range(0, 21).Select(number => number / 10m);
-        List<string> myData = myNumbers.Select<decimal,string>(r => r.ToString()).ToList();
+        List<string> myData = myNumbers.Select<decimal, string>(r => r.ToString()).ToList();
         myData.Insert(0, "Not Scored");
+
+
+        // Using Mapperly: https://github.com/riok/mapperly/blob/main/samples/Riok.Mapperly.Sample/Program.cs
+        // #1
+        /*
+        var car = new Car
+        {
+            Name = "my car",
+            NumberOfSeats = 5,
+            Color = CarColor.Blue,
+            Manufacturer = new Manufacturer(1, "best manufacturer"),
+            Tires =
+            {
+                new Tire { Description = "front left tire" },
+                new Tire { Description = "front right tire" },
+                new Tire { Description = "back left tire" },
+                new Tire { Description = "back right tire" },
+            },
+        };
+
+        var carDto = CarMapper.MapCarToDto(car);
+
+        Console.WriteLine("Mapped car to car DTO:");
+        Console.WriteLine(JsonSerializer.Serialize(carDto, new JsonSerializerOptions { WriteIndented = true }));
+        */
+
+        // #2
+        string input = "Item1::100|Item2::200|Item3::300";
+
+        // Forward mapping
+        var list = LdrMapper.MapToList(input);
+        Console.WriteLine("Parsed List:");
+        foreach (var item in list)
+            Console.WriteLine($"Name: {item.Name}, Amount: {item.Amount}");
+
+        // Reverse mapping
+        string output = LdrMapper.MapToString(list);
+        Console.WriteLine("\nSerialized String:");
+        Console.WriteLine(output);
+
+        // #3
+        string input2 = "Item1::Yes::10.10|Item2::No::0|Item3::Yes::30.30";
+
+        List<LdrItem2> items = Ldr2Mapper.StringToList(input2);
+        string output2 = Ldr2Mapper.ListToString(items);
+        Console.WriteLine("\nSerialized String #3:");
+        Console.WriteLine(output2);
+
+
+        // #4
+        var source = new Source
+        {
+            Name = "John Doe",
+            Id = "12345",
+            Ldrs = "Bank of America::No::N/A|Carlyle::Yes::25000000|Nestle::Yes::500000000"
+        };
+
+        var mapper = new Ldr2Mapper();
+        var dest = mapper.Map(source);
+        var reverse = mapper.Map(dest);
+
+        // dest.Ldrs is List<LdrItem2> with parsed entries (Amount == 0 for "N/A")
+        Console.WriteLine("\nSerialized String #4:");
+        // Console.WriteLine(dest);
+        Console.WriteLine(JsonSerializer.Serialize(dest, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine("\nSerialized String #4 - Reverse:");
+        Console.WriteLine(reverse.Ldrs);
     }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
